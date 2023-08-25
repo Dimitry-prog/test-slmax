@@ -5,6 +5,7 @@ import * as dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
+import { Server } from 'socket.io';
 import appRouter from './routes/index.js';
 import handleErrors from './middlewares/handleErrors.js';
 import { CORS_OPTIONS, DB_URL_DEV, RATE_LIMIT } from './utils/constants.js';
@@ -45,3 +46,28 @@ const startApp = async () => {
 };
 
 startApp();
+
+const io = new Server(PORT, {
+  pingTimeout: 60000,
+  cors: {
+    origin: 'http://localhost:3000',
+  },
+});
+
+io.on('connection', (socket) => {
+  console.log('connected to io', socket.id);
+
+  socket.on('join to room', (room) => {
+    socket.join(room);
+    console.log('User join to room', socket.id, room);
+  });
+
+  socket.on('send message', (message) => {
+    socket.to(message.room).emit('receive message', message);
+    console.log('Message');
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected', socket.id);
+  });
+});
