@@ -3,6 +3,7 @@ import BadRequestError from '../errors/BadRequestError.js';
 import MessageModel from '../models/MessageModel.js';
 import ChatModel from '../models/ChatModel.js';
 import NotFoundError from '../errors/NotFoundError .js';
+import UserModel from '../models/UserModel.js';
 
 export const getMessages = async (req, res, next) => {
   try {
@@ -20,9 +21,29 @@ export const getMessages = async (req, res, next) => {
   }
 };
 
+export const getMessagesByChatId = async (req, res, next) => {
+  try {
+    const messages = await MessageModel.find({
+      chatId: {
+        $eq: req.params.chatId,
+      },
+    }).populate(['owner']);
+
+    if (!messages) {
+      return next(new NotFoundError(ERRORS_MESSAGE.messagesNotFound));
+    }
+    return res.json(messages);
+  } catch (e) {
+    if (e.name === ERRORS_NAME.castError) {
+      return next(new BadRequestError());
+    }
+    return next(e);
+  }
+};
+
 export const getMessageById = async (req, res, next) => {
   try {
-    const message = await MessageModel.findById(req.body.messageId).populate(['owner', 'chatId']);
+    const message = await MessageModel.findById(req.params.messageId).populate(['owner', 'chatId']);
 
     if (!message) {
       return next(new NotFoundError(ERRORS_MESSAGE.messageNotFound));
@@ -38,11 +59,16 @@ export const getMessageById = async (req, res, next) => {
 
 export const createMessage = async (req, res, next) => {
   try {
+    const user = await UserModel.findById(req.user._id);
+    const chat = await ChatModel.findById(req.body.chatId);
+
     const message = await MessageModel.create({
       message: req.body.message,
       owner: req.user._id,
+      name: user.name,
+      chatId: req.body.chatId,
     });
-    const chat = await ChatModel.findById(req.body.chatId);
+
     chat.messages.push(message);
     await chat.save();
 

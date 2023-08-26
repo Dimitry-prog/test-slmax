@@ -22,7 +22,7 @@ export const loginUser = async (req, res, next) => {
 
     return res.cookie('jwt', token, {
       maxAge: 3600000,
-      httpOnly: true,
+      // httpOnly: true,
     }).send({ message: RESPONSE_MESSAGE.userLoginSuccess });
   } catch (e) {
     return next(e);
