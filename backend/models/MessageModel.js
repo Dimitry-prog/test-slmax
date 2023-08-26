@@ -5,6 +5,14 @@ const messageModel = new mongoose.Schema({
     type: String,
     required: true,
   },
+  name: {
+    type: String,
+    required: true,
+  },
+  chatId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'chatModel',
+  },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'userModel',

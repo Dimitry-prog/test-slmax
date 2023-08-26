@@ -40,34 +40,36 @@ const startApp = async () => {
       useNewUrlParser: true,
     });
     app.listen(PORT, () => console.log(`SERVER WORKS!!! at port ${PORT}`));
+
+    const io = new Server(5000, {
+      pingTimeout: 60000,
+      cors: {
+        origin: ['http://localhost:5173', 'https://admin.socket.io'],
+        methods: ['GET', 'POST'],
+        // credentials: true,
+      },
+    });
+
+    io.on('connection', (socket) => {
+      console.log('connected to io', socket.id);
+
+      socket.on('join to room', (room) => {
+        socket.join(room);
+        console.log('User join to room', socket.id, room);
+      });
+
+      socket.on('send message', (message) => {
+        socket.to(message.room).emit('receive message', message);
+        console.log('Message');
+      });
+
+      socket.on('disconnect', () => {
+        console.log('User disconnected', socket.id);
+      });
+    });
   } catch (e) {
     console.log(e);
   }
 };
 
 startApp();
-
-const io = new Server(PORT, {
-  pingTimeout: 60000,
-  cors: {
-    origin: 'http://localhost:3000',
-  },
-});
-
-io.on('connection', (socket) => {
-  console.log('connected to io', socket.id);
-
-  socket.on('join to room', (room) => {
-    socket.join(room);
-    console.log('User join to room', socket.id, room);
-  });
-
-  socket.on('send message', (message) => {
-    socket.to(message.room).emit('receive message', message);
-    console.log('Message');
-  });
-
-  socket.on('disconnect', () => {
-    console.log('User disconnected', socket.id);
-  });
-});
