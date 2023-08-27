@@ -46,21 +46,33 @@ const startApp = async () => {
       cors: {
         origin: ['http://localhost:5173', 'https://admin.socket.io'],
         methods: ['GET', 'POST'],
-        // credentials: true,
+        credentials: true,
       },
     });
 
     io.on('connection', (socket) => {
       console.log('connected to io', socket.id);
 
-      socket.on('join to room', (room) => {
-        socket.join(room);
-        console.log('User join to room', socket.id, room);
+      socket.on('start', (user) => {
+        console.log('user connected', user);
+        socket.join(user);
+        socket.emit('connected');
       });
 
-      socket.on('send message', (message) => {
-        socket.to(message.room).emit('receive message', message);
-        console.log('Message');
+      socket.on('join to chat', (chat) => {
+        socket.join(chat);
+        console.log('User join to chat', chat);
+      });
+
+      socket.on('send message', (data) => {
+        console.log('message back', data);
+        socket.to(data.chatId).emit('receive message', data, (error) => {
+          if (error) {
+            console.error('Error sending message:', error);
+          } else {
+            console.log('Message sent from back');
+          }
+        });
       });
 
       socket.on('disconnect', () => {

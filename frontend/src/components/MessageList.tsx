@@ -1,12 +1,26 @@
-import { useAppSelector } from '../hooks/reduxHooks';
+import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import MessageSingle from './MessageSingle';
 import SendMessage from './SendMessage';
 import Loader from './Loader';
+import { useEffect } from 'react';
+import { Socket } from 'socket.io-client';
+import { getMessagesByChatId } from '../api/messageApi';
 
-const MessageList = () => {
+type MessageListProps = {
+  socket: Socket;
+};
+
+const MessageList = ({ socket }: MessageListProps) => {
   const status = useAppSelector((state) => state.message.status);
   const messages = useAppSelector((state) => state.message.chatMessages);
   const chatId = useAppSelector((state) => state.chat.chatId);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    socket.on('receive message', (data) => {
+      dispatch(getMessagesByChatId(data.chatId));
+    });
+  });
 
   return (
     <>
@@ -22,7 +36,7 @@ const MessageList = () => {
                   <MessageSingle key={message._id} msg={message} />
                 ))}
               </ul>
-              <SendMessage />
+              <SendMessage socket={socket} />
             </>
           )}
         </div>

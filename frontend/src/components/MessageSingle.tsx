@@ -12,10 +12,7 @@ const MessageSingle = ({ msg }: MessageSingleProps) => {
 
   return (
     <li className="flex flex-col gap-2">
-      {/*{date && <SystemMessage date={formattedDate(created_at)} />}*/}
-      {/*{is_new && <NewMessage />}*/}
       <div className={`flex gap-2 ${isMyMsg ? 'justify-end' : ''}`}>
-        {/*{!user.you && <Avatar src={user.avatar} alt={user.name} size="sm" />}*/}
         <div
           className={`flex flex-col gap-1 max-w-[550px] px-3 py-2 rounded ${
             isMyMsg ? 'bg-blue-dark' : 'bg-gray'
@@ -23,7 +20,6 @@ const MessageSingle = ({ msg }: MessageSingleProps) => {
         >
           {!isMyMsg && <h4 className="font-bold">{name}</h4>}
           <p>{message}</p>
-          {/*<TimeMessage time={formattedTime(created_at)} my={user.you} />*/}
         </div>
       </div>
     </li>

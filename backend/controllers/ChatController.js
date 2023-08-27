@@ -3,6 +3,7 @@ import BadRequestError from '../errors/BadRequestError.js';
 import ChatModel from '../models/ChatModel.js';
 import NotFoundError from '../errors/NotFoundError .js';
 import ExistUserError from '../errors/ExistUserError.js';
+import UserModel from '../models/UserModel.js';
 
 export const getChats = async (req, res, next) => {
   try {
@@ -56,7 +57,9 @@ export const addUserToChatById = async (req, res, next) => {
 
     chat.users.push(req.user._id);
     await chat.save();
-    return res.json(chat);
+
+    const user = await UserModel.findById(req.user._id);
+    return res.json(user);
   } catch (e) {
     if (e.name === ERRORS_NAME.castError) {
       return next(new BadRequestError());
@@ -90,7 +93,7 @@ export const getChatByUserId = async (req, res, next) => {
 export const createChat = async (req, res, next) => {
   try {
     const chat = await ChatModel.create({
-      users: [req.body.userId],
+      users: [req.user._id],
       messages: [],
       title: req.body.title,
     });
