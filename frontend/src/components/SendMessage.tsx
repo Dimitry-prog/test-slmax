@@ -4,9 +4,14 @@ import { FormEvent } from 'react';
 import useFormValidation from '../hooks/useFormValidation';
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import { createMessage, getMessagesByChatId } from '../api/messageApi';
+import { Socket } from 'socket.io-client';
 import { getChats } from '../api/chatApi';
 
-const SendMessage = () => {
+type SendMessageProps = {
+  socket: Socket;
+};
+
+const SendMessage = ({ socket }: SendMessageProps) => {
   const { errors, isValid, handleChange, handleBlur, resetForm, values } = useFormValidation();
   const status = useAppSelector((state) => state.message.status);
   const chatId = useAppSelector((state) => state.chat.chatId);
@@ -19,6 +24,7 @@ const SendMessage = () => {
       chatId: chatId as string,
     };
     await dispatch(createMessage(data));
+    await socket.emit('send message', data);
     dispatch(getMessagesByChatId(chatId as string));
     dispatch(getChats());
     resetForm();

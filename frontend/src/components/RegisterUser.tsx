@@ -1,5 +1,5 @@
 import { FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useFormValidation from '../hooks/useFormValidation';
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import { toast } from 'react-toastify';
@@ -105,6 +105,12 @@ const RegisterUser = () => {
         >
           {status === 'loading' ? 'Регистрируем...' : 'Зарегистрироваться'}
         </button>
+        <div className="flex flex-col gap-2 items-center">
+          <p>Уже зарегистрированы?</p>
+          <Link to="/signin" className="text-center text-violet">
+            Войти
+          </Link>
+        </div>
       </form>
     </section>
   );

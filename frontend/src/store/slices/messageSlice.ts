@@ -1,6 +1,6 @@
 import { ActionReducerMapBuilder, createSlice } from '@reduxjs/toolkit';
 import { MessageType } from '../../types/messagesType';
-import { getMessages, getMessagesByChatId } from '../../api/messageApi';
+import { createMessage, getMessages, getMessagesByChatId } from '../../api/messageApi';
 
 type MessageSliceType = {
   messages: MessageType[];
@@ -21,7 +21,12 @@ const initialState: MessageSliceType = {
 const messageSlice = createSlice({
   name: 'message',
   initialState,
-  reducers: {},
+  reducers: {
+    setMessageToChatMessages: (state, action) => {
+      console.log('action.payload', action.payload);
+      state.chatMessages.push(action.payload);
+    },
+  },
   extraReducers: (builder: ActionReducerMapBuilder<MessageSliceType>) => {
     builder
       .addCase(getMessages.fulfilled, (state, action) => {
@@ -30,18 +35,21 @@ const messageSlice = createSlice({
       .addCase(getMessagesByChatId.fulfilled, (state, action) => {
         state.chatMessages = action.payload;
       })
-      .addMatcher(
-        (action) => action.type.endsWith('/fulfilled'),
-        (state) => {
-          state.status = 'success';
-        }
-      )
-      .addMatcher(
-        (action) => action.type.endsWith('/pending'),
-        (state) => {
-          state.status = 'loading';
-        }
-      )
+      .addCase(createMessage.fulfilled, (state, action) => {
+        state.currentMessage = action.payload;
+      })
+      // .addMatcher(
+      //   (action) => action.type.endsWith('/fulfilled'),
+      //   (state) => {
+      //     state.status = 'success';
+      //   }
+      // )
+      // .addMatcher(
+      //   (action) => action.type.endsWith('/pending'),
+      //   (state) => {
+      //     state.status = 'loading';
+      //   }
+      // )
       .addMatcher(
         (action) => action.type.endsWith('/rejected'),
         (state, action) => {

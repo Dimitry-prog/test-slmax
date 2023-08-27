@@ -1,5 +1,5 @@
 import { FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import useFormValidation from '../hooks/useFormValidation';
 import { loginUser } from '../api/authApi';
@@ -84,6 +84,12 @@ const LoginUser = () => {
         >
           {status === 'loading' ? 'Выполняем вход...' : 'Войти'}
         </button>
+        <div className="flex flex-col gap-2 items-center">
+          <p>Ещё не зарегистрированы?</p>
+          <Link to="/signup" className="text-center text-violet">
+            Регистрация
+          </Link>
+        </div>
       </form>
     </section>
   );

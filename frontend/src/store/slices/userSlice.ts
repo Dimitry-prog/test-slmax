@@ -1,5 +1,4 @@
 import { ActionReducerMapBuilder, createSlice } from '@reduxjs/toolkit';
-import { registerUser } from '../../api/authApi';
 import { UserType } from '../../types/userTypes';
 import { getUser } from '../../api/userApi';
 
@@ -23,24 +22,21 @@ const userSlice = createSlice({
   reducers: {},
   extraReducers: (builder: ActionReducerMapBuilder<UserStateType>) => {
     builder
-      .addCase(registerUser.fulfilled, (state, action) => {
-        state.users.push(action.payload);
-      })
       .addCase(getUser.fulfilled, (state, action) => {
         state.userInfo = action.payload;
       })
-      .addMatcher(
-        (action) => action.type.endsWith('/fulfilled'),
-        (state) => {
-          state.status = 'success';
-        }
-      )
-      .addMatcher(
-        (action) => action.type.endsWith('/pending'),
-        (state) => {
-          state.status = 'loading';
-        }
-      )
+      // .addMatcher(
+      //   (action) => action.type.endsWith('/fulfilled'),
+      //   (state) => {
+      //     state.status = 'success';
+      //   }
+      // )
+      // .addMatcher(
+      //   (action) => action.type.endsWith('/pending'),
+      //   (state) => {
+      //     state.status = 'loading';
+      //   }
+      // )
       .addMatcher(
         (action) => action.type.endsWith('/rejected'),
         (state, action) => {

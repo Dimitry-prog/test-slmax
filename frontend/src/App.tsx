@@ -1,6 +1,5 @@
 import ChatPage from './pages/ChatPage';
 import { useWindowSize } from './hooks/useWindowSize';
-import * as io from 'socket.io-client';
 import { Route, Routes } from 'react-router-dom';
 import RegisterUser from './components/RegisterUser';
 import LoginUser from './components/LoginUser';
@@ -9,8 +8,6 @@ import { useAppDispatch } from './hooks/reduxHooks';
 import { useEffect } from 'react';
 import { getUser } from './api/userApi';
 import Cookies from 'js-cookie';
-
-const socket = io.connect('http://localhost:5000');
 
 const App = () => {
   const token = Cookies.get('jwt');
@@ -39,7 +36,6 @@ const App = () => {
         <Route element={<RequireAuth />}>
           <Route path="/" element={<ChatPage />} />
         </Route>
-        {/*<Route path="/" element={<ChatPage />} />*/}
       </Routes>
     </main>
   );
