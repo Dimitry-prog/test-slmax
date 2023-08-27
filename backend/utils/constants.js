@@ -33,9 +33,7 @@ export const CORS_OPTIONS = {
   credentials: true,
 };
 
-export const DB_URL_DEV = 'mongodb+srv://admin:admin@cluster0.deipiap.mongodb.net/chat?retryWrites=true&w=majority';
-
-// export const DB_URL_DEV = 'mongodb://127.0.0.1:27017/chat';
+export const DB_URL_DEV = 'mongodb://127.0.0.1:27017/chat';
 
 export const ERRORS_MESSAGE = {
   userNotFound: 'User not found',
