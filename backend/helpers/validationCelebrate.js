@@ -23,3 +23,24 @@ export const validationUserInfo = celebrate({
     email: Joi.string().trim().email().required(),
   }),
 });
+
+export const validationCreateChat = celebrate({
+  body: Joi.object().keys({
+    title: Joi.string().trim().min(2).required(),
+  }),
+});
+
+export const validationCreateMessage = celebrate({
+  body: Joi.object().keys({
+    message: Joi.string().trim().min(2).required(),
+    chatId: Joi.string().hex().length(24).required(),
+  }),
+});
+
+export const validationAddUserToChat = celebrate(
+  {
+    params: Joi.object().keys({
+      chatId: Joi.string().hex().length(24).required(),
+    }),
+  },
+);

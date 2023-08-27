@@ -4,7 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 import RegisterUser from './components/RegisterUser';
 import LoginUser from './components/LoginUser';
 import RequireAuth from './components/RequireAuth';
-import { useAppDispatch } from './hooks/reduxHooks';
+import { useAppDispatch, useAppSelector } from './hooks/reduxHooks';
 import { useEffect } from 'react';
 import { getUser } from './api/userApi';
 import Cookies from 'js-cookie';
@@ -13,12 +13,13 @@ const App = () => {
   const token = Cookies.get('jwt');
   const dispatch = useAppDispatch();
   const size = useWindowSize();
+  const isAuth = useAppSelector((state) => state.auth.isAuth);
 
   useEffect(() => {
-    if (token) {
+    if (isAuth) {
       dispatch(getUser());
     }
-  }, [token]);
+  }, [token, isAuth]);
 
   if (size < 700) {
     return (

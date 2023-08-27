@@ -17,6 +17,6 @@ const messageModel = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'userModel',
   },
-});
+}, { timestamps: true });
 
 export default mongoose.model('messageModel', messageModel);
